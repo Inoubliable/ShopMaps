@@ -11,16 +11,27 @@ import java.nio.ShortBuffer;
  * Created by TJ on 7.10.2017.
  */
 
-public class Rectangle {
+public class Cuboid {
 
     private FloatBuffer vertexBuffer;
     private ShortBuffer drawListBuffer;
 
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
-    private float squareCoords[] = new float[12];
+    private float squareCoords[] = new float[36*3];
 
-    private short drawOrder[] = { 0, 1, 2, 0, 2, 3 }; // order to draw vertices
+    /*
+    private short drawOrder[] = {
+            0, 1, 2,
+            0, 2, 3,
+            0, 4, 5, 0, 5, 1,
+            1, 5, 6, 1, 6, 2,
+            2, 6, 7, 2, 7, 3,
+            3, 7, 4, 3, 4, 0,
+            4, 5, 6,
+            4, 6, 3
+    }; // order to draw vertices
+    */
 
     private float squareColor[] = new float[4];
 
@@ -48,7 +59,7 @@ public class Rectangle {
 
     private final int mProgram;
 
-    public Rectangle(float[] bottomLeft, float width, float height, float[] color) {
+    public Cuboid(float[] bottomLeft, float width, float height, float depth, float[] color) {
 
         float blX = bottomLeft[0];
         float blY = bottomLeft[1];
@@ -59,12 +70,58 @@ public class Rectangle {
         float brX = trX;
         float brY = blY;
 
+        /*
         float[] coords = {
+                tlX, tlY, depth,   // top left
+                blX, blY, depth,   // bottom left
+                brX, brY, depth,   // bottom right
+                trX, trY, depth,   // top right
                 tlX, tlY, 0.0f,   // top left
                 blX, blY, 0.0f,   // bottom left
                 brX, brY, 0.0f,   // bottom right
-                trX, trY, 0.0f   // top right
+                trX, trY, 0.0f,   // top right
         };
+        */
+
+        float[] coords = {
+                tlX, tlY, depth, // triangle 1 : begin
+                blX, blY, depth,
+                brX, brY, depth, // triangle 1 : end
+                tlX, tlY, depth, // triangle 2 : begin
+                brX, brY, depth,
+                trX, trY, depth, // triangle 2 : end
+                tlX, tlY, depth,
+                tlX, tlY, 0.0f,
+                blX, blY, 0.0f,
+                tlX, tlY, depth,
+                blX, blY, 0.0f,
+                blX, blY, depth,
+                blX, blY, depth,
+                blX, blY, 0.0f,
+                brX, brY, 0.0f,
+                blX, blY, depth,
+                brX, brY, 0.0f,
+                brX, brY, depth,
+                brX, brY, depth,
+                brX, brY, 0.0f,
+                trX, trY, 0.0f,
+                brX, brY, depth,
+                trX, trY, 0.0f,
+                trX, trY, depth,
+                trX, trY, depth,
+                trX, trY, 0.0f,
+                tlX, tlY, 0.0f,
+                trX, trY, depth,
+                tlX, tlY, 0.0f,
+                tlX, tlY, depth,
+                tlX, tlY, 0.0f,
+                blX, blY, 0.0f,
+                brX, brY, 0.0f,
+                tlX, tlY, 0.0f,
+                brX, brY, 0.0f,
+                trX, trY, depth,
+        };
+
         squareCoords = coords;
         squareColor = color;
 
@@ -77,6 +134,7 @@ public class Rectangle {
         vertexBuffer.put(squareCoords);
         vertexBuffer.position(0);
 
+        /*
         // initialize byte buffer for the draw list
         ByteBuffer dlb = ByteBuffer.allocateDirect(
                 // (# of coordinate values * 2 bytes per short)
@@ -85,6 +143,7 @@ public class Rectangle {
         drawListBuffer = dlb.asShortBuffer();
         drawListBuffer.put(drawOrder);
         drawListBuffer.position(0);
+        */
 
         int vertexShader = MyGLRenderer.loadShader(GLES20.GL_VERTEX_SHADER,
                 vertexShaderCode);

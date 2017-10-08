@@ -16,7 +16,8 @@ import javax.microedition.khronos.opengles.GL10;
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
 
-    private List<Rectangle> rectangles;
+    private List<Cuboid> cuboids;
+    private List<Circle> circles;
 
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float[] mMVPMatrix = new float[16];
@@ -25,31 +26,50 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public void onSurfaceCreated(GL10 unused, EGLConfig config) {
         // Set the background frame color
-        GLES20.glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        GLES20.glClearColor(0.43671875f, 0.56953125f, 0.32265625f, 1.0f);
 
-        // initialize rectangles
-        rectangles = new ArrayList<Rectangle>();
+        // initialize cuboids
+        cuboids = new ArrayList<Cuboid>();
+        circles = new ArrayList<Circle>();
 
         float prostorCoords[] = {-10f, -5f};
         float prostorColor[] = { 0f, 0f, 0f, 1.0f };
 
-        float rectangleCoords1[] = {-8f, -4f};
-        float rectangleCoords2[] = {-5f, -4f};
-        float rectangleCoords3[] = {-2f, -4f};
-        float rectangleCoords4[] = {1f, -4f};
-        float rectangleCoords5[] = {-8f, 2f};
-        float rectangleCoords6[] = {4f, -4f};
-        float rectangleCoords7[] = {7f, -4f};
-        float rectangleColor[] = { 0.43671875f, 0.56953125f, 0.32265625f, 1.0f };
+        float steneCoords1[] = {-11f, -6f};
+        float steneCoords2[] = {-10f, -6f};
+        float steneCoords3[] = {10f, -6f};
+        float steneCoords4[] = {-10f, 5f};
+        float steneColor[] = {0.9f, 0.9f, 0.9f, 1.0f};
+        float steneDepth = 10f;
 
-        rectangles.add(new Rectangle(prostorCoords, 20, 10, prostorColor));
-        rectangles.add(new Rectangle(rectangleCoords1, 1, 5, rectangleColor));
-        rectangles.add(new Rectangle(rectangleCoords2, 1, 5, rectangleColor));
-        rectangles.add(new Rectangle(rectangleCoords3, 1, 5, rectangleColor));
-        rectangles.add(new Rectangle(rectangleCoords4, 1, 5, rectangleColor));
-        rectangles.add(new Rectangle(rectangleCoords5, 10, 1.5f, rectangleColor));
-        rectangles.add(new Rectangle(rectangleCoords6, 1.5f, 8f, rectangleColor));
-        rectangles.add(new Rectangle(rectangleCoords7, 1.5f, 8f, rectangleColor));
+        float cuboidCoords1[] = {-8f, -4f};
+        float cuboidCoords2[] = {-5f, -4f};
+        float cuboidCoords3[] = {-2f, -4f};
+        float cuboidCoords4[] = {1f, -4f};
+        float cuboidCoords5[] = {-8f, 2f};
+        float cuboidCoords6[] = {4f, -4f};
+        float cuboidCoords7[] = {7f, -4f};
+        float cuboidColor[] = {0.65f, 0.65f, 0.65f, 1.0f};
+        float cuboidDepth = 5f;
+
+        cuboids.add(new Cuboid(prostorCoords, 20, 10, 0, prostorColor));
+        cuboids.add(new Cuboid(steneCoords1, 1, 12, steneDepth, steneColor));
+        cuboids.add(new Cuboid(steneCoords2, 20, 1, steneDepth, steneColor));
+        cuboids.add(new Cuboid(steneCoords3, 1, 12, steneDepth, steneColor));
+        cuboids.add(new Cuboid(steneCoords4, 20, 1, steneDepth, steneColor));
+
+        cuboids.add(new Cuboid(cuboidCoords1, 1, 5, cuboidDepth, cuboidColor));
+        cuboids.add(new Cuboid(cuboidCoords2, 1, 5, cuboidDepth, cuboidColor));
+        cuboids.add(new Cuboid(cuboidCoords3, 1, 5, cuboidDepth, cuboidColor));
+        cuboids.add(new Cuboid(cuboidCoords4, 1, 5, cuboidDepth, cuboidColor));
+        cuboids.add(new Cuboid(cuboidCoords5, 10, 1.5f, cuboidDepth, cuboidColor));
+        cuboids.add(new Cuboid(cuboidCoords6, 1.5f, 8, cuboidDepth, cuboidColor));
+        cuboids.add(new Cuboid(cuboidCoords7, 1.5f, 8, cuboidDepth, cuboidColor));
+
+        float circleCoords[] = {-2f, -2f};
+        float circleColor[] = { 0.8f, 0f, 0f, 1.0f };
+
+        circles.add(new Circle(circleCoords, 0.5f, circleColor));
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -62,9 +82,12 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // Calculate the projection and view transformation
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mViewMatrix, 0);
 
-        // Draw shape
-        for (Rectangle rectangle : rectangles) {
-            rectangle.draw(mMVPMatrix);
+        // Draw shapes
+        for (Cuboid cuboid : cuboids) {
+            cuboid.draw(mMVPMatrix);
+        }
+        for (Circle circle : circles) {
+            circle.draw(mMVPMatrix);
         }
     }
 
