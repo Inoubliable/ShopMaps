@@ -14,7 +14,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
 
         // Create a GLSurfaceView instance and set it
         // as the ContentView for this Activity.
