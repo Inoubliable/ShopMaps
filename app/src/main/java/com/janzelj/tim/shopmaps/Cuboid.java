@@ -59,10 +59,8 @@ public class Cuboid {
 
     private final int mProgram;
 
-    public Cuboid(float[] bottomLeft, float width, float height, float depth, float[] color) {
+    public Cuboid(float blX, float blY, float width, float height, float depth, float[] color) {
 
-        float blX = bottomLeft[0];
-        float blY = bottomLeft[1];
         float tlX = blX;
         float tlY = blY + height;
         float trX = tlX + width;

@@ -4,12 +4,18 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
+    private DBHelper mydb ;
 
     private GLSurfaceView mGLView;
+
+    public static ArrayList<ArrayList<String>> model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,6 +25,15 @@ public class MainActivity extends AppCompatActivity {
         // as the ContentView for this Activity.
         mGLView = new MyGLSurfaceView(this);
         setContentView(mGLView);
+
+        Bundle extras = getIntent().getExtras();
+        int shop_id = 0;
+        if (extras != null) {
+            shop_id = extras.getInt("id");
+        }
+
+        mydb = new DBHelper(this);
+        model = mydb.getModelByShop(shop_id);
     }
 
     class MyGLSurfaceView extends GLSurfaceView {

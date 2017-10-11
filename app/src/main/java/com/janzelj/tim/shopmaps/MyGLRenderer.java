@@ -3,6 +3,7 @@ package com.janzelj.tim.shopmaps;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,12 @@ import javax.microedition.khronos.opengles.GL10;
  */
 
 public class MyGLRenderer implements GLSurfaceView.Renderer {
+
+    public static final int TYPE_PROSTOR = 1;
+    public static final int TYPE_STENA = 2;
+    public static final int TYPE_REGAL = 3;
+
+    private ArrayList<ArrayList<String>> model;
 
     private List<Cuboid> cuboids;
     private List<Circle> circles;
@@ -31,45 +38,43 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         // initialize cuboids
         cuboids = new ArrayList<Cuboid>();
         circles = new ArrayList<Circle>();
+        model = MainActivity.model;
+        Log.d("timi", "" + model);
 
-        float prostorCoords[] = {-10f, -5f};
-        float prostorColor[] = { 0f, 0f, 0f, 1.0f };
+        for (ArrayList<String> object: model) {
 
-        float steneCoords1[] = {-11f, -6f};
-        float steneCoords2[] = {-10f, -6f};
-        float steneCoords3[] = {10f, -6f};
-        float steneCoords4[] = {-10f, 5f};
-        float steneColor[] = {0.9f, 0.9f, 0.9f, 1.0f};
-        float steneDepth = 10f;
+            int type_id = Integer.parseInt(object.get(0));
+            float x = Float.parseFloat(object.get(1));
+            float y = Float.parseFloat(object.get(2));
+            float width = Float.parseFloat(object.get(3));
+            float height = Float.parseFloat(object.get(4));
 
-        float cuboidCoords1[] = {-8f, -4f};
-        float cuboidCoords2[] = {-5f, -4f};
-        float cuboidCoords3[] = {-2f, -4f};
-        float cuboidCoords4[] = {1f, -4f};
-        float cuboidCoords5[] = {-8f, 2f};
-        float cuboidCoords6[] = {4f, -4f};
-        float cuboidCoords7[] = {7f, -4f};
-        float cuboidColor[] = {0.65f, 0.65f, 0.65f, 1.0f};
-        float cuboidDepth = 5f;
+            float prostorColor[] = {0f, 0f, 0f, 1.0f};
+            float stenaColor[] = {0.9f, 0.9f, 0.9f, 1.0f};
+            float regalColor[] = {0.65f, 0.65f, 0.65f, 1.0f};
+            float prostorDepth = 0;
+            float stenaDepth = 10f;
+            float regalDepth = 5f;
 
-        cuboids.add(new Cuboid(prostorCoords, 20, 10, 0, prostorColor));
-        cuboids.add(new Cuboid(steneCoords1, 1, 12, steneDepth, steneColor));
-        cuboids.add(new Cuboid(steneCoords2, 20, 1, steneDepth, steneColor));
-        cuboids.add(new Cuboid(steneCoords3, 1, 12, steneDepth, steneColor));
-        cuboids.add(new Cuboid(steneCoords4, 20, 1, steneDepth, steneColor));
+            switch (type_id) {
+                case MyGLRenderer.TYPE_PROSTOR:
+                    cuboids.add(new Cuboid(x, y, width, height, prostorDepth, prostorColor));
+                    break;
+                case MyGLRenderer.TYPE_STENA:
+                    cuboids.add(new Cuboid(x, y, width, height, stenaDepth, stenaColor));
+                    break;
+                case MyGLRenderer.TYPE_REGAL:
+                    cuboids.add(new Cuboid(x, y, width, height, regalDepth, regalColor));
+                    break;
+            }
 
-        cuboids.add(new Cuboid(cuboidCoords1, 1, 5, cuboidDepth, cuboidColor));
-        cuboids.add(new Cuboid(cuboidCoords2, 1, 5, cuboidDepth, cuboidColor));
-        cuboids.add(new Cuboid(cuboidCoords3, 1, 5, cuboidDepth, cuboidColor));
-        cuboids.add(new Cuboid(cuboidCoords4, 1, 5, cuboidDepth, cuboidColor));
-        cuboids.add(new Cuboid(cuboidCoords5, 10, 1.5f, cuboidDepth, cuboidColor));
-        cuboids.add(new Cuboid(cuboidCoords6, 1.5f, 8, cuboidDepth, cuboidColor));
-        cuboids.add(new Cuboid(cuboidCoords7, 1.5f, 8, cuboidDepth, cuboidColor));
+        }
 
-        float circleCoords[] = {-2f, -2f};
-        float circleColor[] = { 0.8f, 0f, 0f, 1.0f };
 
-        circles.add(new Circle(circleCoords, 0.5f, circleColor));
+        //float circleCoords[] = {-2f, -2f};
+        //float circleColor[] = { 0.8f, 0f, 0f, 1.0f };
+
+        //circles.add(new Circle(circleCoords, 0.5f, circleColor));
     }
 
     public void onDrawFrame(GL10 unused) {
