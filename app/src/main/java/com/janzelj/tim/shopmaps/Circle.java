@@ -124,4 +124,26 @@ public class Circle {
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
     }
+
+    public void moveCircle(float[] center, float r) {
+        vertices[0] = 0 + center[0];
+        vertices[1] = 0 + center[1];
+        vertices[2] = 0;
+
+        for(int i = 1; i < VERTICES_NUM; i++){
+            vertices[(i * 3)+ 0] = (float) (r * Math.cos((3.14 / (VERTICES_NUM/2 - 2)) * (float)i)) + center[0];
+            vertices[(i * 3)+ 1] = (float) (r * Math.sin((3.14 / (VERTICES_NUM/2 - 2)) * (float)i)) + center[1];
+            vertices[(i * 3)+ 2] = 0;
+        }
+
+        // initialize vertex byte buffer for shape coordinates
+        ByteBuffer bb = ByteBuffer.allocateDirect(
+                // (# of coordinate values * 4 bytes per float)
+                vertices.length * 4);
+        bb.order(ByteOrder.nativeOrder());
+        vertexBuffer = bb.asFloatBuffer();
+        vertexBuffer.put(vertices);
+        vertexBuffer.position(0);
+
+    }
 }

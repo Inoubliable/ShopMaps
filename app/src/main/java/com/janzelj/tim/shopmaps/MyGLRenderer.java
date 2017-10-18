@@ -26,6 +26,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
     private List<Cuboid> cuboids;
     private List<Circle> circles;
 
+    private float circleColor[] = { 0.8f, 0f, 0f, 1.0f };
+
     // mMVPMatrix is an abbreviation for "Model View Projection Matrix"
     private final float[] mMVPMatrix = new float[16];
     private final float[] mProjectionMatrix = new float[16];
@@ -39,7 +41,6 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
         cuboids = new ArrayList<Cuboid>();
         circles = new ArrayList<Circle>();
         model = MainActivity.model;
-        Log.d("timi", "" + model);
 
         for (ArrayList<String> object: model) {
 
@@ -70,11 +71,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
         }
 
-
-        //float circleCoords[] = {-2f, -2f};
-        //float circleColor[] = { 0.8f, 0f, 0f, 1.0f };
-
-        //circles.add(new Circle(circleCoords, 0.5f, circleColor));
+        float coords[] = {100f, 100f}; // nekje izven pogleda
+        circles.add(new Circle(coords, 0.5f, circleColor));
     }
 
     public void onDrawFrame(GL10 unused) {
@@ -142,5 +140,9 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
 
     public void setZoom(float zoom) {
         mZoom = 100.0f - zoom;
+    }
+
+    public void changeProductMark(float[] circleCoords) {
+        circles.get(0).moveCircle(circleCoords, 0.5f);
     }
 }

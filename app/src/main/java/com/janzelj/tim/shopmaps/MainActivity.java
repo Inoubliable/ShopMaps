@@ -1,21 +1,28 @@
 package com.janzelj.tim.shopmaps;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private DBHelper mydb ;
+
+    private MyGLRenderer mRenderer;
+    private DBHelper mydb;
 
     private GLSurfaceView mGLView;
 
     public static ArrayList<ArrayList<String>> model;
+    public float[] productCoords = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +41,61 @@ public class MainActivity extends AppCompatActivity {
 
         mydb = new DBHelper(this);
         model = mydb.getModelByShop(shop_id);
+
+        onSearchRequested();
+
+        //handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                // show search
+                onSearchRequested();
+
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    private void handleIntent(Intent intent) {
+        //if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+        Uri uri = intent.getData();
+        int productId = 0;
+
+        if (uri != null) {
+            productId = Integer.parseInt(uri.getLastPathSegment());
+        }
+
+        productCoords = mydb.getProductCoordinates(productId);
+
+        if(productCoords != null) {
+            mRenderer.changeProductMark(productCoords);
+        }
+        productCoords = null;
+
     }
 
     class MyGLSurfaceView extends GLSurfaceView {
 
-        private final MyGLRenderer mRenderer;
+        //private final MyGLRenderer mRenderer;
 
         private float mPreviousX;
         private float mPreviousY;
@@ -91,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Set the Renderer for drawing on the GLSurfaceView
             setRenderer(mRenderer);
-            setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+            //setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
             mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
         }
